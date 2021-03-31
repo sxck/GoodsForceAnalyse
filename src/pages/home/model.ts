@@ -1,11 +1,15 @@
-import { Subscription, Effect, ImmerReducer } from 'umi';
-import { getIndustryList, getstairList, getleafList,getchannelList } from '@/services';
+import { Subscription, Effect, ImmerReducer, IManifest } from 'umi';
+import { getIndustryList, getstairList, getleafList,getchannelList,getScentList,getSecondTagList, getPP,getSource } from '@/services';
 
 export interface HomeModelStateType {
   industryList: [];
   stairTypeList: [];
   leafList: [];
   channelList:[]
+  scentList:[]
+  secondTagList:[]
+  ppList:[]
+  sourceList:[]
 }
 
 interface HomeModelType {
@@ -16,12 +20,20 @@ interface HomeModelType {
     getStairList: Effect;
     getLeafList: Effect;
     getchannel:Effect
+    getScentList:Effect
+    getsecondTagList:Effect
+    getpp:Effect
+    getSourceRQ:Effect
   };
   reducers: {
     GETINDUSTRYLIST: ImmerReducer;
     GETSTAIRLIST: ImmerReducer;
     GETLEAFLIST:ImmerReducer
     GETCHANNEL:ImmerReducer
+    GETSCENTLIST:ImmerReducer
+    GETSECONDTAGLIST:ImmerReducer
+    GETPP:ImmerReducer
+    GETSOURCE:ImmerReducer
   };
   Subscription: {
     super: Subscription;
@@ -34,7 +46,11 @@ const HomeModel: HomeModelType = {
     industryList: [],
     stairTypeList: [],
     leafList: [],
-    channelList:[]
+    channelList:[],
+    scentList:[],
+    secondTagList:[],
+    ppList:[],
+    sourceList:[]
   },
   effects: {
     *getIndustryList({ payload }, { call, put }) {
@@ -65,6 +81,36 @@ const HomeModel: HomeModelType = {
         type:'GETCHANNEL',
         payload:r
       })
+    },
+    *getScentList({},{call,put}){
+      const r = yield call(getScentList)
+     yield put({
+       type:'GETSCENTLIST',
+       payload:r
+     })
+    },
+    *getsecondTagList({},{call,put}){
+      const r = yield call(getSecondTagList)
+      yield put({
+        type:'GETSECONDTAGLIST',
+        payload:r
+      })
+    },
+    *getpp({},{call,put}){
+      const r = yield call(getPP)
+      yield put({
+        type:'GETPP',
+        payload:r
+      })
+    },
+    *getSourceRQ({},{call,put}){
+      console.log(1)
+      const r = yield call(getSource)
+      console.log(r)
+      yield put({
+        type:'GETSOURCE',
+        payload:r
+      })
     }
   },
   reducers: {
@@ -79,6 +125,18 @@ const HomeModel: HomeModelType = {
     },
     GETCHANNEL(state,{payload}){
       state.channelList = payload
+    },
+    GETSCENTLIST(state,{payload}){
+      state.scentList = payload
+    },
+    GETSECONDTAGLIST(state,{payload}){
+      state.secondTagList = payload
+    },
+    GETPP(state,{payload}){
+      state.ppList = payload
+    },
+    GETSOURCE(state,{payload}){
+        state.sourceList = payload
     }
   },
   Subscription: {

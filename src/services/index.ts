@@ -25,3 +25,23 @@ export const getchannelList = () =>
   request({
     url: 'industryList/getchannel',
   });
+
+export const getScentList = () =>
+  request({
+    url: 'Scent',
+  });
+
+export const getSecondTagList = () =>
+  request({
+    url: 'secondTag',
+  });
+
+export const getPP = () =>
+  request({
+    url: 'pp',
+  });
+
+export const getSource = () =>
+  request({
+    url: 'source',
+  });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
-import { Dispatch } from 'umi';
+import { connect, Dispatch } from 'umi';
 import { Button, Form, Input, Select, Space, message } from 'antd';
 
 const { Option }: { Option: any } = Select;
@@ -11,40 +11,46 @@ const Left = ({
   stairTypeList,
   leafList,
   channelList,
+  setClassify,
 }: {
   dispatch: Dispatch;
   industryList: [];
   stairTypeList: [];
   leafList: [];
   channelList: [];
+  setClassify: any;
 }) => {
   const [form] = Form.useForm();
   const [stairType, setStairType] = useState('');
   const [LeafList, setLeafList] = useState('');
-  const [classify, setClassify] = useState({
+  const [allValues, setAllValues] = useState({
     goodId: '',
     Industry: '请选择',
     stair: '请选择',
     leaf: '请选择',
     channel: '请选择',
   });
-  console.log(classify)
-
   // 搜索
-  const onFinish = (value: any) => {
-    console.log(classify);
+  const onSearch = () => {
+    setClassify({
+      goodId: parseInt(allValues.goodId),
+      Industry: allValues.Industry,
+      stair: allValues.stair,
+      leaf: allValues.leaf,
+      channel: allValues.channel,
+    });
   };
 
   // 重置
-  const reset =()=>{
-    setClassify({
-    goodId: '',
-    Industry: '请选择',
-    stair: '请选择',
-    leaf: '请选择',
-    channel: '请选择',
-    })
-  }
+  const reset = () => {
+    setAllValues({
+      goodId: '',
+      Industry: '请选择',
+      stair: '请选择',
+      leaf: '请选择',
+      channel: '请选择',
+    });
+  };
 
   // 渠道逻辑
   const getchannel = () => {
@@ -116,21 +122,21 @@ const Left = ({
   };
   return (
     <div className={styles.left}>
-      <Form form={form} onFinish={onFinish}>
+      <Form form={form}>
         <Form.Item className={styles.item}>
           <div className={styles.colorWhite}>商品</div>
           <Input
-            value={classify.goodId}
+            placeholder="请输入商品ID"
+            value={allValues.goodId}
             className={styles.inp}
-            placeholder='请输入商品ID'
             bordered={false}
-            onChange={(e)=>{
-              setClassify({
-                goodId:e.target.value,
-                Industry:classify.Industry,
-                stair: classify.stair,
-                leaf: classify.leaf,
-                channel: classify.channel,
+            onChange={(e) => {
+              setAllValues({
+                goodId: e.target.value,
+                Industry: allValues.Industry,
+                stair: allValues.stair,
+                leaf: allValues.leaf,
+                channel: allValues.channel,
               });
             }}
           />
@@ -138,18 +144,18 @@ const Left = ({
         <Form.Item className={styles.item}>
           <div style={{ color: 'white' }}>行业</div>
           <Select
-            value={classify.Industry}
+            value={allValues.Industry}
             showArrow={false}
             className={styles.select}
             onFocus={getIndustryList}
             onChange={(value: string) => {
               stairTypeSelect(value);
-              setClassify({
-                goodId:classify.goodId ,
+              setAllValues({
+                goodId: allValues.goodId,
                 Industry: value,
-                stair: classify.stair,
-                leaf: classify.leaf,
-                channel: classify.channel,
+                stair: allValues.stair,
+                leaf: allValues.leaf,
+                channel: allValues.channel,
               });
             }}
           >
@@ -165,18 +171,18 @@ const Left = ({
         <Form.Item className={styles.item}>
           <div className={styles.colorWhite}>一级类目</div>
           <Select
-            value={classify.stair}
+            value={allValues.stair}
             showArrow={false}
             className={styles.select}
             onFocus={getstairList}
             onChange={(value: string) => {
               leafListSelect(value);
-              setClassify({
-                goodId:classify.goodId ,
-                Industry: classify.Industry,
+              setAllValues({
+                goodId: allValues.goodId,
+                Industry: allValues.Industry,
                 stair: value,
-                leaf: classify.leaf,
-                channel: classify.channel,
+                leaf: allValues.leaf,
+                channel: allValues.channel,
               });
             }}
           >
@@ -192,20 +198,19 @@ const Left = ({
         <Form.Item className={styles.item}>
           <div className={styles.colorWhite}>叶子类目</div>
           <Select
-            value={classify.leaf}
+            value={allValues.leaf}
             showArrow={false}
             className={styles.select}
             onFocus={getLeafList}
-            onChange={(value:string)=>{
-              setClassify({
-                goodId:classify.goodId ,
-                Industry: classify.Industry,
-                stair:  classify.stair,
+            onChange={(value: string) => {
+              setAllValues({
+                goodId: allValues.goodId,
+                Industry: allValues.Industry,
+                stair: allValues.stair,
                 leaf: value,
-                channel: classify.channel,
+                channel: allValues.channel,
               });
-              }
-            }
+            }}
           >
             {leafList.map((item, index) => {
               return (
@@ -219,20 +224,19 @@ const Left = ({
         <Form.Item className={styles.item}>
           <div className={styles.colorWhite}>商品渠道</div>
           <Select
-            value={classify.channel}
+            value={allValues.channel}
             showArrow={false}
             className={styles.select}
             onFocus={getchannel}
-            onChange={(value:string)=>{
-              setClassify({
-                goodId:classify.goodId ,
-                Industry: classify.Industry,
-                stair:  classify.stair,
-                leaf: classify.leaf,
+            onChange={(value: string) => {
+              setAllValues({
+                goodId: allValues.goodId,
+                Industry: allValues.Industry,
+                stair: allValues.stair,
+                leaf: allValues.leaf,
                 channel: value,
               });
-              }
-            }
+            }}
           >
             {channelList.map((item, index) => {
               return (
@@ -249,7 +253,7 @@ const Left = ({
           <Button
             type="primary"
             style={{ background: 'blue', border: 'none' }}
-            htmlType="submit"
+            onClick={onSearch}
           >
             搜索
           </Button>
